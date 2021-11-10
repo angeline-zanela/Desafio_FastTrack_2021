@@ -1,0 +1,37 @@
+#Criar ID único incremental para cada transação
+    df2 = df2.assign(id=[0 + i for i in range(len(df2))])[['id'] + df2.columns.tolist()]
+
+    #coluna age
+    df2["age"] = df2["age"].map(lambda x: str(x).replace("'",""))
+    #remove o U
+    df2["age"] = df2["age"].replace(["U"], None)
+    #converte string para int
+    df2["age"] = df2["age"].astype(int)
+
+    #remove as aspas simples
+    df2["gender"] = df2["gender"].map(lambda x: str(x).replace("'",""))
+    #substitui as letras por NaN
+    df2["gender"] = df2["gender"].replace(["U", "E"], np.nan)
+
+
+    #Criar coluna mês: 
+    #      step 0 a 30 = 1
+    #      step 31 a 60 = 2
+    #      step 61 a 90 = 3
+    #      step 91 a 120 = 4
+    #      step 121 a 150 = 5
+    #      step 151 a 180 = 6
+
+    df2.loc[(df2["step"] <= 30), "mes"] = "01"
+    df2.loc[(df2["step"] >  30)  & (df2["step"] <= 60),  "mes"] = "02"
+    df2.loc[(df2["step"] >  60)  & (df2["step"] <= 90),  "mes"] = "03"
+    df2.loc[(df2["step"] >  90)  & (df2["step"] <= 120), "mes"] = "04"
+    df2.loc[(df2["step"] >  120) & (df2["step"] <= 150), "mes"] = "05"
+    df2.loc[(df2["step"] >  150) & (df2["step"] <= 180), "mes"] = "06"
+
+  #cria coluna ano
+  #df2 = df2.drop("ano", 1)
+    df2["ano"] = "2021"
+
+  #coluna dia
+    df2["dia"] = "01"
