@@ -1,0 +1,35 @@
+    db = msql.connect(host='localhost', port='3306', database=nome_schema, user='dados', password='123')
+    if db.is_connected():
+      cursor = db.cursor()
+      cursor.execute("select database();")
+      record = cursor.fetchone()
+      print(f"Sua conexão ao banco {record} foi estabelecida")
+      cursor.execute(f'DROP TABLE IF EXISTS {nome_tabela};')
+      print('Criando a tabela...')
+      
+      cursor.execute('''
+                        CREATE table pagseguro.db_transactions(
+                        id int PRIMARY KEY,
+                        step int, 
+                        customer varchar(50), 
+                        age varchar(50), 
+                        gender varchar(10),
+                        zipcodeOri varchar(20),
+                        merchant varchar(20), 
+                        zipMerchant varchar(50), 
+                        category varchar(50), 
+                        amount varchar(50),
+                        fraud int,
+                        mes int, 
+                        ano int, 
+                        dia int
+                        );''')
+
+      cursor.execute('''LOAD DATA INFILE '/var/lib/mysql-files/dados_db_transactions.csv' 
+                        INTO TABLE pagseguro.db_transactions 
+                        FIELDS TERMINATED by ',' 
+                        ENCLOSED BY "'" 
+                        LINES TERMINATED BY '\n' 
+                        IGNORE 1 ROWS;''')
+      print("fez load db_transactions")
+      db.commit()
